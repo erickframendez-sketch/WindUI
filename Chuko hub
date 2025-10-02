@@ -1,0 +1,65 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+-- Crear UI desde el script para asegurarnos que todo esté correcto
+local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+screenGui.Name = "ChukoHub"
+
+local frame = Instance.new("Frame", screenGui)
+frame.Size = UDim2.new(0, 200, 0, 150)
+frame.Position = UDim2.new(0, 20, 0, 20)
+frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+
+local function createButton(name, text, posY)
+	local button = Instance.new("TextButton", frame)
+	button.Name = name
+	button.Text = text
+	button.Size = UDim2.new(1, -10, 0, 40)
+	button.Position = UDim2.new(0, 5, 0, posY)
+	button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+	button.TextColor3 = Color3.new(1, 1, 1)
+	button.Font = Enum.Font.SourceSans
+	button.TextSize = 20
+	return button
+end
+
+local tpButton = createButton("TPButton", "TP", 5)
+local tp2Button = createButton("TP2Button", "TP2", 50)
+local noclipButton = createButton("NoclipButton", "Noclip", 95)
+
+-- Funcionalidad
+local savedPosition = nil
+local noclipActive = false
+
+tpButton.MouseButton1Click:Connect(function()
+	savedPosition = humanoidRootPart.Position
+	print("Posición guardada:", savedPosition)
+end)
+
+tp2Button.MouseButton1Click:Connect(function()
+	if savedPosition then
+		humanoidRootPart.CFrame = CFrame.new(savedPosition)
+		print("Teletransportado.")
+	else
+		warn("No se ha guardado ninguna posición aún.")
+	end
+end)
+
+noclipButton.MouseButton1Click:Connect(function()
+	noclipActive = not noclipActive
+	print("Noclip", noclipActive and "activado" or "desactivado")
+end)
+
+RunService.Stepped:Connect(function()
+	if noclipActive then
+		for _, part in pairs(character:GetDescendants()) do
+			if part:IsA("BasePart") then
+				part.CanCollide = false
+			end
+		end
+	end
+end)
