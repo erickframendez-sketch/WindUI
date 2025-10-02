@@ -1,0 +1,29 @@
+
+-- LocalScript dentro de StarterPlayer > StarterPlayerScripts
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+-- Create Screen GUI
+local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+screenGui.Name = "UniversalHub"
+
+-- UI CONFIG
+local buttons = {
+    {Name = "Fly", Function = function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/KtLbKz8i"))()
+    end},
+    {Name = "Infinite Jump", Function = function()
+        local UIS = game:GetService("UserInputService")
+        UIS.JumpRequest:Connect(function()
+            if humanoid then
+                humanoid:ChangeState("Jumping")
+            end
+        end)
+    end},
+    {Name = "Noclip", Function = function()
+        local noclip = false
+        game:GetService('RunService').Stepped:Connect(function()
+            if noclip and character then
+                for _, part in pairs
